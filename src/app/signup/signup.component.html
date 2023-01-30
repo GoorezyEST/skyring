@@ -1,0 +1,104 @@
+<section class="signup_container" *ngIf="!userSigned">
+  <form
+    class="signup_form"
+    [formGroup]="signupForm"
+    (ngSubmit)="submitedForm(usernameInput.value, $event)"
+  >
+    <img
+      src="../../assets/SkyRing Logo.png"
+      alt="SkyRing logotype"
+      class="signup_form_logo"
+    />
+    <div class="signup_form_area">
+      <input
+        placeholder="Enter your username ..."
+        type="text"
+        class="signup_form_area_input"
+        formControlName="username"
+        autocomplete="off"
+        #usernameInput
+      />
+      <p
+        class="signup_form_area_error"
+        *ngIf="
+          signupForm.controls['username'].invalid &&
+          signupForm.controls['username'].dirty &&
+          (signupForm.controls['username'].hasError('required') ||
+            signupForm.controls['username'].hasError('pattern'))
+        "
+      >
+        Username required (No special charactes)
+      </p>
+      <p
+        class="signup_form_area_error"
+        *ngIf="
+          signupForm.controls['username'].invalid &&
+          signupForm.controls['username'].dirty &&
+          !signupForm.controls['username'].hasError('pattern') &&
+          (signupForm.controls['username'].hasError('minlength') ||
+            signupForm.controls['username'].hasError('maxlength'))
+        "
+      >
+        Minimum 4 charactes, maximun 15.
+      </p>
+    </div>
+
+    <button
+      type="submit"
+      class="signup_form_submit"
+      [disabled]="signupForm.invalid"
+    >
+      Join chat
+    </button>
+  </form>
+</section>
+
+<section class="loading" *ngIf="userSigned && !notLoading">
+  <div class="lds-dual-ring"></div>
+</section>
+
+<section *ngIf="userSigned && notLoading" class="chat_section">
+  <div class="chat_container">
+    <div class="chat_container_users">
+      <p class="chat_container_users_title">Users</p>
+      <span *ngFor="let item of userList" class="chat_container_users_name">{{
+        item.username
+      }}</span>
+    </div>
+    <div class="chat_container_chat">
+      <div class="chat_container_chat_msgs" id="chat" #chat>
+        <div
+          *ngFor="let item of msgList"
+          class="chat_container_chat_msgs_msg"
+          [class.right]="item.side !== 'left'"
+          [class.left]="item.side !== 'right'"
+        >
+          <span
+            class="chat_container_chat_msgs_msg_name"
+            [ngStyle]="{ color: assignColor(item.username) }"
+            >{{ item.username }}</span
+          >
+          <p class="chat_container_chat_msgs_msg_text">{{ item.msg }}</p>
+        </div>
+      </div>
+      <form
+        class="chat_container_chat_form"
+        (ngSubmit)="msgSubmit(messageInput, messageInput.value, $event)"
+      >
+        <input
+          type="text"
+          class="chat_container_chat_form_input"
+          placeholder="Type a message ..."
+          #messageInput
+        />
+        <button type="submit" class="chat_container_chat_form_btn">
+          <img
+            src="../../assets/send.png"
+            alt="Icon for sending messagges"
+            class="chat_container_chat_form_btn_img"
+          />
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
