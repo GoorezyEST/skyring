@@ -43,10 +43,6 @@
     height: 70%;
   }
 
-  @media screen and (max-height: 625px) {
-    height: 100%;
-  }
-
   &_logo {
     width: 64px;
 
@@ -318,7 +314,7 @@
 
     &_form {
       width: 100%;
-      height: 10%;
+      height: 60px;
       position: relative;
 
       &_input {
