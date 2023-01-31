@@ -1,12 +1,14 @@
 @import "../../utilities/variables.scss";
 
 .signup_container {
+  min-height: max-content;
   height: 100vh;
   max-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: $black;
+  overflow: hidden;
 }
 
 .signup_form {

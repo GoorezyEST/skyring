@@ -1,0 +1,44 @@
+@import "../../utilities/variables.scss";
+
+.error_container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $black;
+}
+
+.error_content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 250px;
+  width: 300px;
+  background-color: $primary;
+  border-radius: 0.5rem;
+
+  &_title {
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: $error;
+  }
+
+  &_text {
+    font-weight: 400;
+    font-size: 1rem;
+    color: $white;
+  }
+
+  &_btn {
+    font-size: 1rem;
+    outline: none;
+    border: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background-color: $secondary;
+    color: $white;
+    cursor: pointer;
+  }
+}
