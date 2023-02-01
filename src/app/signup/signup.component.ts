@@ -18,10 +18,35 @@ import { ref, onChildAdded, onChildRemoved, query } from 'firebase/database';
 })
 export class SignupComponent implements OnInit, AfterViewInit {
   @ViewChild('chat', { static: false }) chatDiv!: ElementRef;
+  @ViewChild('dropdown', { static: false }) dropdownDiv!: ElementRef;
+  @ViewChild('dropdownClick', { static: false }) dropdownTextClick!: ElementRef;
 
   @HostListener('window:beforeunload')
   deleteUsernameFromDB() {
     this.deleteUserData();
+  }
+
+  @HostListener('body:click', ['$event'])
+  bodyClickDropdown(event: Event) {
+    if (
+      this.dropdownTextClick !== undefined &&
+      this.dropdownTextClick.nativeElement.contains(event.target) &&
+      !this.dropdownDiv.nativeElement.classList.contains('show_dropdown')
+    ) {
+      this.dropdownDiv.nativeElement.classList.add('show_dropdown');
+      this.dropdownTextClick.nativeElement.classList.add('main_noborder');
+    } else if (
+      this.userSigned === true &&
+      this.dropdownDiv.nativeElement.classList.contains('show_dropdown') &&
+      !this.dropdownDiv.nativeElement.contains(event.target) &&
+      (this.dropdownTextClick.nativeElement.contains(event.target) ||
+        !this.dropdownTextClick.nativeElement.contains(event.target))
+    ) {
+      this.dropdownDiv.nativeElement.classList.remove('show_dropdown');
+      this.dropdownTextClick.nativeElement.classList.remove('main_noborder');
+    } else {
+      return;
+    }
   }
 
   @Input() userSigned: boolean = false;
@@ -64,8 +89,10 @@ export class SignupComponent implements OnInit, AfterViewInit {
     onChildAdded(query(ref(this.firebase.database, 'roomchat')), async () => {
       await this.getMessages();
       setTimeout(() => {
-        this.chatDiv.nativeElement.scrollTop =
-          this.chatDiv.nativeElement.scrollHeight;
+        if (this.chatDiv !== undefined) {
+          this.chatDiv.nativeElement.scrollTop =
+            this.chatDiv.nativeElement.scrollHeight;
+        }
       }, 3);
     });
   }

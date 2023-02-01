@@ -59,14 +59,20 @@
 
 <section *ngIf="userSigned && notLoading" class="chat_section">
   <div class="chat_container">
-    <div class="chat_container_users">
-      <p class="chat_container_users_title">Users</p>
-      <span *ngFor="let item of userList" class="chat_container_users_name">{{
-        item.username
-      }}</span>
-    </div>
     <div class="chat_container_chat">
       <div class="chat_container_chat_msgs" id="chat" #chat>
+        <div class="dropdown">
+          <div class="dropdown_content">
+            <p class="dropdown_content_text" #dropdownClick>Users</p>
+            <div class="dropdown_content_main" #dropdown>
+              <span
+                *ngFor="let item of userList"
+                class="dropdown_content_items"
+                >{{ item.username }}</span
+              >
+            </div>
+          </div>
+        </div>
         <div
           *ngFor="let item of msgList"
           class="chat_container_chat_msgs_msg"

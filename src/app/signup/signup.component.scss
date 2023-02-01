@@ -152,7 +152,105 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
   background-color: $black;
+}
+
+.dropdown {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &_content {
+    position: relative;
+    display: inline-block;
+    width: max-content;
+    text-align: center;
+
+    &_text {
+      font-size: 1.25rem;
+      font-weight: 600;
+      width: 200px;
+      display: inline-block;
+      color: $secondary;
+      cursor: pointer;
+      z-index: 500;
+      background-color: $primary;
+      padding: 0.25rem;
+      border-bottom-left-radius: 0.5rem;
+      border-bottom-right-radius: 0.5rem;
+      opacity: 0.5;
+
+      @media screen and (max-width: 700px) {
+        opacity: 1;
+      }
+
+      @media screen and (max-width: 600px) {
+        font-size: 1rem;
+        font-weight: 500;
+        width: 165px;
+      }
+    }
+
+    &_main {
+      display: none;
+      position: absolute;
+      background-color: $primary;
+      width: 200px;
+      text-align: center;
+      min-height: max-content;
+      max-height: 75px;
+      overflow-y: scroll;
+      padding: 0.25rem 0 0.25rem 0;
+      z-index: 100;
+      left: 50%;
+      transform: translateX(-50%);
+      border-bottom-left-radius: 0.5rem;
+      border-bottom-right-radius: 0.5rem;
+
+      @media screen and (max-width: 600px) {
+        width: 165px;
+      }
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    &_items {
+      cursor: default;
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+      color: $white;
+      font-weight: 400;
+      font-size: 1rem;
+
+      &:not(:first-child) {
+        margin-top: 0.5rem;
+      }
+
+      @media screen and (max-width: 600px) {
+        font-size: 0.85rem;
+      }
+    }
+  }
+}
+
+.show_dropdown {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.main_noborder {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  opacity: 1;
 }
 
 .chat_container {
@@ -160,12 +258,9 @@
   height: 80%;
   background-color: $primary;
   border-radius: 0.5rem;
-  display: grid;
-  column-gap: 2rem;
-  grid-template-columns: 250px 1fr;
-  grid-template-rows: 0% 100% 0%;
-  justify-items: center;
+  display: flex;
   align-items: center;
+  justify-content: center;
   padding: 2rem;
 
   @media screen and (min-width: 1440px) {
@@ -186,52 +281,6 @@
     padding: 0.75rem;
   }
 
-  &_users {
-    height: 100%;
-    max-height: 100%;
-    width: 100%;
-    grid-row: 2 / 3;
-    grid-column: 1 / 2;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    text-align: center;
-    background-color: $primary-light;
-    border-radius: 0.5rem;
-    padding: 1rem 0;
-    overflow-y: scroll;
-
-    @media screen and (max-width: 1000px) {
-      display: none;
-    }
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-
-    &_title {
-      font-size: 1.75rem;
-      font-weight: 600;
-      color: $secondary;
-
-      @media screen and (min-width: 1920px) {
-        font-size: 2rem;
-      }
-    }
-
-    &_name {
-      font-size: 1.25rem;
-      font-weight: 500;
-      color: $white;
-      margin-top: 0.25rem;
-
-      @media screen and (min-width: 1920px) {
-        font-size: 1.4rem;
-      }
-    }
-  }
-
   &_chat {
     width: 100%;
     height: 100%;
@@ -245,12 +294,17 @@
       height: 100%;
       width: 100%;
       display: grid;
+      position: relative;
       grid-template-columns: repeat(2, 1fr);
       grid-auto-rows: min-content;
       border-top-left-radius: 0.5rem;
       border-top-right-radius: 0.5rem;
       overflow-y: scroll;
       padding: 1rem 1rem 0 1rem;
+
+      @media screen and (max-width: 700px) {
+        padding-top: 2rem;
+      }
 
       @media screen and (max-width: 600px) {
         border-top-left-radius: 0.25rem;
