@@ -83,6 +83,9 @@ export class SignupComponent implements OnInit, AfterViewInit {
     onChildRemoved(ref(this.firebase.database, 'roomlist'), async () => {
       this.userList = await this.firebase.getUserList();
     });
+    setInterval(async () => {
+      await this.firebase.checkAfk();
+    }, 2 * 60 * 1000);
   }
 
   ngAfterViewInit(): void {

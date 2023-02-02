@@ -169,6 +169,7 @@
     display: inline-block;
     width: max-content;
     text-align: center;
+    z-index: 500;
 
     &_text {
       font-size: 1.25rem;

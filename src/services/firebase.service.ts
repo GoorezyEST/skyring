@@ -12,6 +12,8 @@ import {
   orderByChild,
   query,
   startAt,
+  onChildAdded,
+  onChildRemoved,
 } from 'firebase/database';
 import { firebaseConfig } from './configs';
 
@@ -20,11 +22,22 @@ export class Firebase {
   app: FirebaseApp;
   database: Database;
   userFromLocal: string | null;
+  userList: { username: string }[] = [];
 
   constructor() {
     this.app = initializeApp(firebaseConfig);
     this.database = getDatabase(this.app);
     this.userFromLocal = null;
+    async () => {
+      this.userList = await this.getUserList();
+    };
+    onChildAdded(ref(this.database, 'roomlist'), async () => {
+      this.userList = await this.getUserList();
+    });
+
+    onChildRemoved(ref(this.database, 'roomlist'), async () => {
+      this.userList = await this.getUserList();
+    });
   }
 
   async writeUsername(username: string) {
@@ -36,8 +49,10 @@ export class Firebase {
   }
 
   async writeUserList() {
+    var timestamp = new Date().toUTCString();
     await set(ref(this.database, 'roomlist/' + this.userFromLocal), {
       username: this.userFromLocal,
+      timestampJoined: timestamp,
     });
   }
 
@@ -81,6 +96,68 @@ export class Firebase {
 
   async deleteChat() {
     await remove(ref(this.database, 'roomchat'));
+  }
+
+  async checkAfk() {
+    if (this.userFromLocal === null || this.userFromLocal === undefined) {
+      return;
+    } else {
+      const thresholdTime = 10 * 60 * 1000; // 10 minutes in milliseconds
+
+      const messages = await get(child(ref(this.database), `roomchat`));
+      const users = await get(child(ref(this.database), 'roomlist'));
+
+      if (messages.exists()) {
+        let data: { username: string; timestamp: string }[] = messages.val();
+        let filteredMessages = Object.values(data).filter(
+          (item) => item.username === this.userFromLocal
+        );
+
+        filteredMessages.sort(
+          (a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp)
+        );
+
+        let lastMessage = filteredMessages[0];
+        let currentTimestamp = Date.now();
+        let difference = currentTimestamp - Date.parse(lastMessage.timestamp);
+
+        if (difference >= thresholdTime) {
+          this.deleteUserData();
+          this.deleteUserFromList();
+          if (this.userList.length > 1) {
+            this.writeDisconnectMessage();
+          }
+          if (this.userList.length === 1) {
+            this.deleteChat();
+          }
+          location.reload();
+        }
+      }
+
+      if (users.exists()) {
+        let data: { username: string; timestampJoined: string }[] = users.val();
+
+        let filterUser = Object.values(data).filter(
+          (item) => item.username === this.userFromLocal
+        );
+
+        let joinedTimestamp = Date.parse(filterUser[0].timestampJoined);
+        let currentTimestamp = Date.now();
+        let difference = currentTimestamp - joinedTimestamp;
+
+        if (difference >= thresholdTime) {
+          this.deleteUserData();
+          this.deleteUserFromList();
+          if (this.userList.length > 1) {
+            this.writeDisconnectMessage();
+          }
+          if (this.userList.length === 1) {
+            this.deleteChat();
+          }
+          location.reload();
+        }
+      }
+    }
   }
 
   async getUserList() {
