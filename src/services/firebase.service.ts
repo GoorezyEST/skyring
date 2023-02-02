@@ -55,7 +55,17 @@ export class Firebase {
     var timestamp = new Date().toUTCString();
     await push(ref(this.database, 'roomchat'), {
       username: 'Skyring',
-      msg: `${this.userFromLocal} is here!`,
+      msg: `${this.userFromLocal} join the chat!`,
+      timestamp: timestamp,
+      side: 'left',
+    });
+  }
+
+  async writeDisconnectMessage() {
+    var timestamp = new Date().toUTCString();
+    await push(ref(this.database, 'roomchat'), {
+      username: 'Skyring',
+      msg: `${this.userFromLocal} leave the chat!`,
       timestamp: timestamp,
       side: 'left',
     });

@@ -78,6 +78,7 @@
           class="chat_container_chat_msgs_msg"
           [class.right]="item.side !== 'left'"
           [class.left]="item.side !== 'right'"
+          [class.admin]="item.username === 'Skyring'"
         >
           <span
             class="chat_container_chat_msgs_msg_name"

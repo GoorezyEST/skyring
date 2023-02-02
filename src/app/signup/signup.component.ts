@@ -115,7 +115,9 @@ export class SignupComponent implements OnInit, AfterViewInit {
     await this.firebase.writeUserList();
     this.userList = await this.firebase.getUserList();
     this.userSigned = true;
-    await this.firebase.writeJoinMessage();
+    if (this.userList.length > 1) {
+      await this.firebase.writeJoinMessage();
+    }
     setTimeout(async () => {
       this.joinTimestamp = new Date().toUTCString();
       await this.getMessages();
@@ -126,6 +128,9 @@ export class SignupComponent implements OnInit, AfterViewInit {
   deleteUserData() {
     this.firebase.deleteUserData();
     this.firebase.deleteUserFromList();
+    if (this.userList.length > 1) {
+      this.firebase.writeDisconnectMessage();
+    }
     if (this.userList.length === 1) {
       this.firebase.deleteChat();
     }
@@ -147,7 +152,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
   assignColor(username: string) {
     if (username == 'Skyring') {
-      return 'rgb(255, 76, 41)';
+      return;
     }
     if (this.userColors.has(username)) {
       return this.userColors.get(username);
@@ -161,5 +166,9 @@ export class SignupComponent implements OnInit, AfterViewInit {
       this.availableColors.splice(colorNum, 1);
       return color;
     }
+  }
+
+  checkAdming(msg: HTMLDivElement) {
+    console.log(msg);
   }
 }
