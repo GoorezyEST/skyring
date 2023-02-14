@@ -14,11 +14,13 @@ import {
   startAt,
   onChildAdded,
   onChildRemoved,
+  onValue,
 } from 'firebase/database';
-import { firebaseConfig } from './configs';
+import { firebaseConfig, restoreCMD } from './configs';
 
 @Injectable({ providedIn: 'root' })
 export class Firebase {
+  [x: string]: any;
   app: FirebaseApp;
   database: Database;
   userFromLocal: string | null;
@@ -37,6 +39,16 @@ export class Firebase {
 
     onChildRemoved(ref(this.database, 'roomlist'), async () => {
       this.userList = await this.getUserList();
+    });
+    onValue(ref(this.database, 'restoreDB'), async (snapshot) => {
+      const restoreValue = snapshot.val();
+      if (restoreValue === 'reload') {
+        await set(ref(this.database, 'restoreDB'), 'no-action');
+        location.reload();
+        await remove(ref(this.database, 'roomchat'));
+        await remove(ref(this.database, 'roomlist'));
+        await remove(ref(this.database, 'users'));
+      }
     });
   }
 
@@ -88,6 +100,12 @@ export class Firebase {
 
   async deleteUserFromList() {
     await remove(child(ref(this.database, 'roomlist'), this.userFromLocal!));
+  }
+
+  async restoreDB(cmd: string) {
+    if (cmd === restoreCMD) {
+      await set(ref(this.database, 'restoreDB'), 'reload');
+    }
   }
 
   async deleteUserData() {

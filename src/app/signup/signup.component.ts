@@ -145,6 +145,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
       return;
     }
     input.value = '';
+    this.firebase.restoreDB(msg);
     this.firebase.writeMessage(msg);
   }
 
